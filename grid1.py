@@ -69,7 +69,6 @@ def run(probLmt=10 ** 6, sigfigs=1, experimentCnt=1000, seed=None, first=True):
 
 if __name__ == "__main__":
     t = 0.05
-    
     for i in range(1, 6):
         p = run(sigfigs=i, experimentCnt=100, first=True)
         if i == 1:
