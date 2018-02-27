@@ -16,55 +16,65 @@ def timedfunction(f, *a, **b):
 
 def singleThrow():
     "throwing a single dart"
-    x = np.random.uniform(-.5, .5)
-    y = np.random.uniform(-.5, .5)
-    if np.sqrt(x**2 + y**2) <= 0.5:
+    x = np.random.uniform(-1, 1)
+    y = np.random.uniform(-1, 1)
+    if x**2 + y**2 <= 1:
         return True
     return False
     
-def singleExperiment(pl, err, seed):
+def singleExperiment(pl, err, seed, sigfigs):
     "running a single experiment"
     cnt = 0
     hit = 0
     pi = 0
-    BKV_upper = err + BKV
-    BKV_lower = BKV - err
+    BKV_upper = err + round(BKV, sigfigs)
+    BKV_lower = round(BKV, sigfigs) - err
     for i in range(pl):
+     #   print(pi)
         if(singleThrow()):
             hit += 1.0
         cnt += 1.0
-        pi = 4 * hit / cnt
         if hit:
             pi = 4 * hit / cnt
-        #print pi
         if pi >= BKV_lower and pi <= BKV_upper:
             return pi, cnt, False
     return pi, cnt, True
 
 
     #@timedfunction
-def run(probLmt=100000, tol=0.005, experimentCnt=5, seed=None):
+def run(sigfigs=1, probLmt=10 ** 6, tol=0.005, experimentCnt=5, seed=None, first=True):
     "main method for parallel line"
     entry = []
-    seed = seed or np.random.randint(low=0, high=9999)
+    seed = seed or np.random.randint(low=0, high=9999999)
+    OFtol= 5.0/(10.0 ** (sigfigs + 1))
     np.random.seed(seed)
     for i in range(experimentCnt):
         isCensored = False
-        t, result = timedfunction(singleExperiment, probLmt, tol, seed)
+        result = singleExperiment(probLmt, OFtol, seed,sigfigs)
         pi, cnt, isCensored = result
         entry.append({
-            "Pi": round(pi, 7), 
-            "Count": cnt, 
+            "Pi": round(pi, 10), 
+            "CntProbe": cnt,
+            "CntProbeLmt": probLmt, 
             "IsCensored":isCensored, 
             "Seed":seed, 
-            "Error": round(pi - BKV, 7)
+            "Error": round(pi - BKV, 10),
+            "OFTol": round(OFtol, 10),
+            "Significant Figures:": sigfigs
             })
-        seed = np.random.randint(low=0, high=9999)
+        seed = np.random.randint(low=0, high=9999999)
         np.random.seed(seed)
     return entry
 
 if __name__ == "__main__":
-    p = run()
-    for i in p:
-        print i
+    for i in range(1, 9):
+        p = run(sigfigs=i, experimentCnt=100, first=True)
+        if i == 1:
+            for key, item in p[0].items():
+                print(key, end='\t')
+            print()
+        for i in p:
+            for key, item in i.items():
+                print(item, end='\t')
+            print()
   #  print("Program running")

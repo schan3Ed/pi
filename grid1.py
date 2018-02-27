@@ -68,7 +68,6 @@ def run(probLmt=10 ** 6, sigfigs=1, experimentCnt=1000, seed=None, first=True):
     return entry
 
 if __name__ == "__main__":
-    t = 0.05
     for i in range(1, 6):
         p = run(sigfigs=i, experimentCnt=100, first=True)
         if i == 1:
@@ -79,6 +78,5 @@ if __name__ == "__main__":
             for key, item in i.items():
                 print(item, end='\t')
             print()
-        t = t / 10.0
   #  print("Program running")
 
