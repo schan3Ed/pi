@@ -1,6 +1,8 @@
 import random
 import time
 import numpy as np
+import pandas as pd
+import os
 import math
 import csv
 
@@ -35,9 +37,15 @@ def run(experimentCnt=100):
 
 res = run()
 
-with open('testc.csv', "w") as output:
+with open('test.csv', "w") as output:
     writer = csv.writer(output, lineterminator='\n')
     for val in res:
         writer.writerow([val]) 
 
+df1 = pd.read_csv('singlegrid_100-1.csv', header=None)
 
+def extractStatistics(df):
+    mean = df.mean()
+    error = abs(mean - BKV)
+    
+    return values
