@@ -50,7 +50,7 @@ def run(sigfigs=1, probLmt=10 ** 6, tol=0.005, experimentCnt=5, seed=None, first
     np.random.seed(seed)
     for i in range(experimentCnt):
         isCensored = False
-        result = singleExperiment(probLmt, OFtol, seed,sigfigs)
+        t, result = timedFunction(singleExperiment, probLmt, OFtol, seed,sigfigs, first=first)
         pi, cnt, isCensored = result
         entry.append({
             "Pi": round(pi, 10), 
@@ -61,12 +61,14 @@ def run(sigfigs=1, probLmt=10 ** 6, tol=0.005, experimentCnt=5, seed=None, first
             "Error": round(pi - BKV, 10),
             "OFTol": round(OFtol, 10),
             "Significant Figures:": sigfigs
+             "RunTime": t
             })
         seed = np.random.randint(low=0, high=9999999)
         np.random.seed(seed)
     return entry
 
 if __name__ == "__main__":
+    id = 1
     for i in range(1, 9):
         p = run(sigfigs=i, experimentCnt=100, first=True)
         if i == 1:
@@ -75,6 +77,8 @@ if __name__ == "__main__":
             print()
         for i in p:
             for key, item in i.items():
+                print(id, end='\t')
                 print(item, end='\t')
+                id += 1
             print()
   #  print("Program running")
