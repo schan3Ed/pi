@@ -43,9 +43,15 @@ with open('test.csv', "w") as output:
         writer.writerow([val]) 
 
 df1 = pd.read_csv('singlegrid_100-1.csv', header=None)
+df2 = pd.read_csv('singlegrid_100-2.csv', header=None)
+df3 = pd.read_csv('singlegrid_100-3.csv', header=None)
+df4 = pd.read_csv('singlegrid_100-4.csv', header=None)
+df5 = pd.read_csv('singlegrid_100-5.csv', header=None)
 
 def extractStatistics(df):
     mean = df.mean()
     error = abs(mean - BKV)
-    
-    return values
+    count = df.count()
+    minimum = df.min()
+    maximum = df.max()
+    return [mean, error, count, minimum, maximum]
