@@ -6,7 +6,7 @@ import math
 from random import *
 
 BKV = 3.14159265359
-sampleID = 1
+sampleID = 0
 def timedFunction(f, *a, **b):
     start = time.time()
     a = f(*a, **b)
@@ -37,21 +37,18 @@ def singleExperiment(pl, err, seed, sigfigs, first=True):
         cnt += 1.0
         if hit:
             pi = 2 * cnt / hit
-        #print pi
-        if pi >= BKV_lower and pi <= BKV_upper and first:
-            return pi, cnt, False
     return pi, cnt, True
 
 
 #@timedfunction
-def run(probLmt=10, sigfigs=1, experimentCnt=1000, seed=None, first=True):
+def run(probLmt=10, sigfigs=1, experimentCnt=10, seed=None, first=True):
     "main method for parallel line"
     entry = []
     global sampleID
     seed = seed or np.random.randint(low=0, high=9999999)
     OFtol= 5.0/(10.0 ** (sigfigs + 1))
     np.random.seed(seed)
-    for i in range(experimentCnt):
+    for i in range(experimentCnt + 1):
         isCensored = False
         t, result = timedFunction(singleExperiment, probLmt, OFtol, seed,sigfigs, first=first)
         pi, cnt, isCensored = result
@@ -59,12 +56,8 @@ def run(probLmt=10, sigfigs=1, experimentCnt=1000, seed=None, first=True):
             "ID": sampleID,
             "Pi Hat": round(pi, 10), 
             "CntProbe": cnt,
-            "CntProbeLmt": probLmt, 
-            "IsCensored":isCensored, 
             "SeedInit":seed, 
             "Error": round(pi - BKV, 10),
-            "OFTol": round(OFtol, 10),
-            "Sig Figs": sigfigs,
             "RunTime": t,
             "Experiment": "Parallel"
             })
@@ -78,9 +71,10 @@ def run(probLmt=10, sigfigs=1, experimentCnt=1000, seed=None, first=True):
 
 
 if __name__ == "__main__":
-    for i in range(1, 9):
-        p = run(sigfigs=i, experimentCnt=100, first=True)
-        if i == 1:
+    for j in range(1, 6):
+        lmt = 10 ** j
+        p = run(probLmt=lmt)
+        if j == 1:
             for entry in p:
                 for key, item in entry.items():
                     print(key, end='\t')
