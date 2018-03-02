@@ -5,7 +5,7 @@ import sys
 import math
 
 BKV = 3.14159265359
-
+sampleID = 1
 def timedFunction(f, *a, **b):
     start = time.time()
     a = f(*a, **b)
@@ -43,9 +43,10 @@ def singleExperiment(pl, err, seed, sigfigs, first=True):
 
 
 #@timedfunction
-def run(probLmt=10 ** 6, sigfigs=1, experimentCnt=1000, seed=None, first=True):
+def run(probLmt=50 ** 6, sigfigs=1, experimentCnt=1000, seed=None, first=True):
     "main method for parallel line"
     entry = []
+    global sampleID
     seed = seed or np.random.randint(low=0, high=9999999)
     OFtol= 5.0/(10.0 ** (sigfigs + 1))
     np.random.seed(seed)
@@ -54,6 +55,7 @@ def run(probLmt=10 ** 6, sigfigs=1, experimentCnt=1000, seed=None, first=True):
         t, result = timedFunction(singleExperiment, probLmt, OFtol, seed,sigfigs, first=first)
         pi, cnt, isCensored = result
         entry.append({
+            "ID": sampleID,
             "Pi Hat": round(pi, 10), 
             "CntProbe": cnt,
             "CntProbeLmt": probLmt, 
@@ -62,25 +64,28 @@ def run(probLmt=10 ** 6, sigfigs=1, experimentCnt=1000, seed=None, first=True):
             "Error": round(pi - BKV, 10),
             "OFTol": round(OFtol, 10),
             "Sig Figs": sigfigs,
-            "RunTime": t
+            "RunTime": t,
+            "Experiment": "Parallel"
             })
+        sampleID += 1
+      #  print(t)
         seed = np.random.randint(low=0, high=9999999)
         np.random.seed(seed)
-    return entry
+        yield entry[-1]
+    #return entry
 
 if __name__ == "__main__":
-    id = 1
-    for i in range(1, 4):
+    for i in range(1, 9):
         p = run(sigfigs=i, experimentCnt=100, first=True)
         if i == 1:
-            for key, item in p[0].items():
-                print(key, end='\t')
-            print()
+            for entry in p:
+                for key, item in entry.items():
+                    print(key, end='\t')
+                print()
+                break
         for i in p:
             for key, item in i.items():
-                print(id, end='\t')
                 print(item, end='\t')
-                id += 1
             print()
   #  print("Program running")
 

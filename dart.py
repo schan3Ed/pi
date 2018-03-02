@@ -6,8 +6,8 @@ import numpy as np
 import random
 import time
 BKV = 3.1415926
-
-def timedfunction(f, *a, **b):
+sampleID = 1
+def timedFunction(f, *a, **b):
     start = time.time()
     a = f(*a, **b)
     end = time.time()
@@ -42,17 +42,19 @@ def singleExperiment(pl, err, seed, sigfigs):
 
 
     #@timedfunction
-def run(sigfigs=1, probLmt=10 ** 6, tol=0.005, experimentCnt=5, seed=None, first=True):
+def run(sigfigs=1, probLmt=50 ** 6, tol=0.005, experimentCnt=5, seed=None, first=True):
     "main method for parallel line"
     entry = []
+    global sampleID
     seed = seed or np.random.randint(low=0, high=9999999)
     OFtol= 5.0/(10.0 ** (sigfigs + 1))
     np.random.seed(seed)
     for i in range(experimentCnt):
         isCensored = False
-        t, result = timedFunction(singleExperiment, probLmt, OFtol, seed,sigfigs, first=first)
+        t, result = timedFunction(singleExperiment, probLmt, OFtol, seed,sigfigs)
         pi, cnt, isCensored = result
         entry.append({
+            "ID": sampleID,
             "Pi": round(pi, 10), 
             "CntProbe": cnt,
             "CntProbeLmt": probLmt, 
@@ -60,25 +62,27 @@ def run(sigfigs=1, probLmt=10 ** 6, tol=0.005, experimentCnt=5, seed=None, first
             "Seed":seed, 
             "Error": round(pi - BKV, 10),
             "OFTol": round(OFtol, 10),
-            "Significant Figures:": sigfigs
-             "RunTime": t
+            "Significant Figures:": sigfigs,
+             "RunTime": t,
+             "Experiment": "Dart"
             })
+        sampleID += 1
         seed = np.random.randint(low=0, high=9999999)
         np.random.seed(seed)
+        yield entry[-1]
     return entry
 
 if __name__ == "__main__":
-    id = 1
     for i in range(1, 9):
         p = run(sigfigs=i, experimentCnt=100, first=True)
         if i == 1:
-            for key, item in p[0].items():
-                print(key, end='\t')
-            print()
+            for entry in p:
+                for key, item in entry.items():
+                    print(key, end='\t')
+                print()
+                break
         for i in p:
             for key, item in i.items():
-                print(id, end='\t')
                 print(item, end='\t')
-                id += 1
             print()
   #  print("Program running")
