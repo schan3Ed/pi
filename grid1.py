@@ -69,7 +69,6 @@ def run(probLmt=10, sigfigs=1, experimentCnt=1000, seed=None, first=True):
             "Experiment": "Parallel"
             })
         
-      #  print(t)
         seed = np.random.randint(low=0, high=9999999)
         np.random.seed(seed)
         yield entry[-1]

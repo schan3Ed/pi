@@ -1,12 +1,12 @@
+# A class to find the experimental value of Pi by throwing darts onto a unit square with a circle with unit diameter embedded inside. 
+# Authors: Edward Chan and Annie Tang
+# February 9, 2018
+
+import numpy as np
 import random
 import time
-import numpy as np
-import sys
-import math
-from random import *
-
-BKV = 3.14159265359
-sampleID = 0
+BKV = 3.1415926
+sampleID = 1
 def timedFunction(f, *a, **b):
     start = time.time()
     a = f(*a, **b)
@@ -14,17 +14,15 @@ def timedFunction(f, *a, **b):
     return end - start, a
 
 
-def singleDrop(d=1.0, L=1.0):
-    "dropping a single needle"
-    y = np.random.uniform(0, d)
-    angle = np.random.uniform(0, math.pi)
-    height = L/2 * np.sin(angle)
-  #  print y - height
-    if (y + height) >= d or (y - height) <= 0:
+def singleThrow():
+    "throwing a single dart"
+    x = np.random.uniform(-1, 1)
+    y = np.random.uniform(-1, 1)
+    if x**2 + y**2 <= 1:
         return True
     return False
     
-def singleExperiment(pl, err, seed, sigfigs, first=True):
+def singleExperiment(pl, err, seed, sigfigs):
     "running a single experiment"
     cnt = 0
     hit = 0
@@ -32,43 +30,45 @@ def singleExperiment(pl, err, seed, sigfigs, first=True):
     BKV_upper = err + round(BKV, sigfigs)
     BKV_lower = round(BKV, sigfigs) - err
     for i in range(pl):
-        if(singleDrop()):
+     #   print(pi)
+        if(singleThrow()):
             hit += 1.0
         cnt += 1.0
         if hit:
-            pi = 2 * cnt / hit
+            pi = 4 * hit / cnt
     return pi, cnt, True
 
 
-#@timedfunction
-def run(probLmt=10, sigfigs=1, experimentCnt=10, seed=None, first=True):
+    #@timedfunction
+def run(sigfigs=1, probLmt=50 ** 6, tol=0.005, experimentCnt=10, seed=None, first=True):
     "main method for parallel line"
     entry = []
     global sampleID
     seed = seed or np.random.randint(low=0, high=9999999)
     OFtol= 5.0/(10.0 ** (sigfigs + 1))
     np.random.seed(seed)
-    for i in range(experimentCnt + 1):
+    for i in range(experimentCnt):
         isCensored = False
-        t, result = timedFunction(singleExperiment, probLmt, OFtol, seed,sigfigs, first=first)
+        t, result = timedFunction(singleExperiment, probLmt, OFtol, seed,sigfigs)
         pi, cnt, isCensored = result
         entry.append({
             "ID": sampleID,
-            "Pi Hat": round(pi, 10), 
+            "Pi": round(pi, 10), 
             "CntProbe": cnt,
-            "SeedInit":seed, 
+            "CntProbeLmt": probLmt, 
+            "IsCensored":isCensored, 
+            "Seed":seed, 
             "Error": round(pi - BKV, 10),
-            "RunTime": t,
-            "Experiment": "Parallel"
+            "OFTol": round(OFtol, 10),
+            "Significant Figures:": sigfigs,
+             "RunTime": t,
+             "Experiment": "Dart"
             })
-        
-      #  print(t)
+        sampleID += 1
         seed = np.random.randint(low=0, high=9999999)
         np.random.seed(seed)
         yield entry[-1]
-        sampleID += 1
-    #return entry
-
+    return entry
 
 if __name__ == "__main__":
     for j in range(1, 7):
@@ -86,4 +86,3 @@ if __name__ == "__main__":
                 print(item, end='\t')
             print()
   #  print("Program running")
-
