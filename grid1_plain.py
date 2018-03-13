@@ -59,7 +59,7 @@ def run(probLmt=10, sigfigs=1, experimentCnt=10, seed=None, first=True):
             "SeedInit":seed, 
             "Error": round(pi - BKV, 10),
             "RunTime": t,
-            "Experiment": "Parallel"
+            "Experiment": "Needles1"
             })
         
       #  print(t)
