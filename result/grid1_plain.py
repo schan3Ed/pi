@@ -41,7 +41,7 @@ def singleExperiment(pl, err, seed, sigfigs, first=True):
 
 
 #@timedfunction
-def run(probLmt=10, sigfigs=1, experimentCnt=10, seed=None, first=True):
+def run(probLmt=10, sigfigs=1, experimentCnt=100, seed=None, first=True):
     "main method for parallel line"
     entry = []
     global sampleID
@@ -71,7 +71,7 @@ def run(probLmt=10, sigfigs=1, experimentCnt=10, seed=None, first=True):
 
 
 if __name__ == "__main__":
-    for j in range(1, 7):
+    for j in range(1, 6):
         total = 0
         lmt = 10 ** j
         p = run(probLmt=lmt)

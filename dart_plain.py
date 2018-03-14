@@ -6,7 +6,7 @@ import numpy as np
 import random
 import time
 BKV = 3.1415926
-sampleID = 1
+sampleID = 0
 def timedFunction(f, *a, **b):
     start = time.time()
     a = f(*a, **b)
@@ -40,7 +40,7 @@ def singleExperiment(pl, err, seed, sigfigs):
 
 
     #@timedfunction
-def run(sigfigs=1, probLmt=50 ** 6, tol=0.005, experimentCnt=10, seed=None, first=True):
+def run(sigfigs=1, probLmt=50 ** 6, tol=0.005, experimentCnt=100, seed=None, first=True):
     "main method for parallel line"
     entry = []
     global sampleID
@@ -53,16 +53,12 @@ def run(sigfigs=1, probLmt=50 ** 6, tol=0.005, experimentCnt=10, seed=None, firs
         pi, cnt, isCensored = result
         entry.append({
             "ID": sampleID,
-            "Pi": round(pi, 10), 
+            "Pi Hat": round(pi, 10), 
             "CntProbe": cnt,
-            "CntProbeLmt": probLmt, 
-            "IsCensored":isCensored, 
-            "Seed":seed, 
+            "SeedInit":seed, 
             "Error": round(pi - BKV, 10),
-            "OFTol": round(OFtol, 10),
-            "Significant Figures:": sigfigs,
-             "RunTime": t,
-             "Experiment": "Dart"
+            "RunTime": t,
+            "Experiment": "Dart"
             })
         sampleID += 1
         seed = np.random.randint(low=0, high=9999999)
@@ -71,7 +67,7 @@ def run(sigfigs=1, probLmt=50 ** 6, tol=0.005, experimentCnt=10, seed=None, firs
     return entry
 
 if __name__ == "__main__":
-    for j in range(1, 7):
+    for j in range(1, 6):
         total = 0
         lmt = 10 ** j
         p = run(probLmt=lmt)
