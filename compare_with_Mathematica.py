@@ -55,3 +55,4 @@ def extractStatistics(df):
     minimum = df.min()
     maximum = df.max()
     return [mean, error, count, minimum, maximum]
+print extractStatistics(df1)

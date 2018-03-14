@@ -66,7 +66,7 @@ def run(probLmt=10, sigfigs=1, experimentCnt=1000, seed=None, first=True):
             "OFTol": round(OFtol, 10),
             "Sig Figs": sigfigs,
             "RunTime": t,
-            "Experiment": "Parallel"
+            "Experiment": "Needles1"
             })
         
         seed = np.random.randint(low=0, high=9999999)
