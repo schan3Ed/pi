@@ -1,0 +1,28 @@
+# fileName  = pi_signif_darts_stats.txt 
+# userId    = edo 
+# nodeName  = Edwards-MacBook-Pro.local 
+# sysName   = Darwin 
+# date      = 20180403 
+# timeStamp = 03155409 
+#
+# command   = file_asym_stats_hits(fileName=./pi_signif_darts.txt, solverName=Needles1, ...) 
+#
+sampleSize	censoredPerc	solverName	OFname	xName	signifDigits	yNames	median	mean	stDev	SE	cVar	max2mean	min	max
+99	0	Needles1	pi_signif_needles1	signifDigits	2	OFerror	0.03048149	0.02958987	0.011572	0.001163	0.3911	1.639	0.001264543	0.04849004
+99	0	Needles1	pi_signif_needles1	signifDigits	2	numThrows	23	49.07071	84.05274	8.448	1.713	9.863	9	484
+99	0	Needles1	pi_signif_needles1	signifDigits	2	runtime	6.389618e-05	0.0001742527	0.0003680483	3.699e-05	2.112	14.53	2.098083e-05	0.002531052
+100	0	Needles1	pi_signif_needles1	signifDigits	3	OFerror	0.001264543	0.001980964	0.001285025	0.0001285	0.6487	2.492	4.008858e-05	0.004936963
+100	0	Needles1	pi_signif_needles1	signifDigits	3	numThrows	42	109.3	147.7497	14.77	1.352	6.871	14	751
+100	0	Needles1	pi_signif_needles1	signifDigits	3	runtime	0.0001306534	0.0003135228	0.0004289163	4.289e-05	1.368	7.751	3.194809e-05	0.002430201
+100	0	Needles1	pi_signif_needles1	signifDigits	4	OFerror	0.0002980146	0.0002822512	0.0001443035	1.443e-05	0.5113	1.73	3.20354e-07	0.0004883055
+100	0	Needles1	pi_signif_needles1	signifDigits	4	numThrows	424	792.47	1015.91	101.6	1.282	6.277	163	4974
+100	0	Needles1	pi_signif_needles1	signifDigits	4	runtime	0.001025438	0.001873715	0.002482097	0.0002482	1.325	7.686	0.0003430843	0.01440215
+100	0	Needles1	pi_signif_needles1	signifDigits	5	OFerror	3.182399e-05	2.663725e-05	1.551941e-05	1.552e-06	0.5826	1.82	3.20354e-07	4.848235e-05
+100	0	Needles1	pi_signif_needles1	signifDigits	5	numThrows	1698.5	3599.3	4410.302	441	1.225	5.483	219	19734
+100	0	Needles1	pi_signif_needles1	signifDigits	5	runtime	0.004396558	0.008755722	0.0103291	0.001033	1.18	5.4	0.0004580021	0.04728508
+100	0	Needles1	pi_signif_needles1	signifDigits	6	OFerror	2.661113e-06	2.356711e-06	1.620083e-06	1.62e-07	0.6874	2.089	3.20354e-07	4.922275e-06
+100	0	Needles1	pi_signif_needles1	signifDigits	6	numThrows	5191	9136.41	9775.688	977.6	1.07	5.159	452	47134
+100	0	Needles1	pi_signif_needles1	signifDigits	6	runtime	0.01211894	0.0213961	0.02266368	0.002266	1.059	5.288	0.000939846	0.113132
+100	0	Needles1	pi_signif_needles1	signifDigits	7	OFerror	3.20354e-07	2.95246e-07	1.031946e-07	1.032e-08	0.3495	1.68	1.441271e-08	4.959506e-07
+100	0	Needles1	pi_signif_needles1	signifDigits	7	numThrows	11519	20951.87	24024.14	2402	1.147	4.39	452	91975
+100	0	Needles1	pi_signif_needles1	signifDigits	7	runtime	0.0277245	0.04938394	0.05723549	0.005724	1.159	4.684	0.0009441376	0.2312989

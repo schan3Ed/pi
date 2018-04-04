@@ -22,13 +22,11 @@ def singleThrow():
         return True
     return False
     
-def singleExperiment(pl, err, seed, sigfigs):
+def singleExperiment(pl, seed):
     "running a single experiment"
     cnt = 0
     hit = 0
     pi = 0
-    BKV_upper = err + round(BKV, sigfigs)
-    BKV_lower = round(BKV, sigfigs) - err
     for i in range(pl):
      #   print(pi)
         if(singleThrow()):
@@ -40,25 +38,25 @@ def singleExperiment(pl, err, seed, sigfigs):
 
 
     #@timedfunction
-def run(sigfigs=1, probLmt=50 ** 6, tol=0.005, experimentCnt=100, seed=None, first=True):
+def run(probLmt=50 ** 6, experimentCnt=100, seed=None):
     "main method for parallel line"
     entry = []
     global sampleID
     seed = seed or np.random.randint(low=0, high=9999999)
-    OFtol= 5.0/(10.0 ** (sigfigs + 1))
     np.random.seed(seed)
     for i in range(experimentCnt):
         isCensored = False
-        t, result = timedFunction(singleExperiment, probLmt, OFtol, seed,sigfigs)
+        t, result = timedFunction(singleExperiment, probLmt, seed)
+        
         pi, cnt, isCensored = result
         entry.append({
             "ID": sampleID,
             "Pi Hat": round(pi, 10), 
             "CntProbe": cnt,
             "SeedInit":seed, 
-            "Error": round(pi - BKV, 10),
-            "RunTime": t,
-            "Experiment": "Dart"
+            "Error": pi - BKV,
+            "Experiment": "Dart",
+             "RunTime": t,
             })
         sampleID += 1
         seed = np.random.randint(low=0, high=9999999)
@@ -67,7 +65,7 @@ def run(sigfigs=1, probLmt=50 ** 6, tol=0.005, experimentCnt=100, seed=None, fir
     return entry
 
 if __name__ == "__main__":
-    for j in range(1, 6):
+    for j in range(1, 8):
         total = 0
         lmt = 10 ** j
         p = run(probLmt=lmt)
