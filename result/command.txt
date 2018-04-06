@@ -1,0 +1,39 @@
+
+
+#####################################
+#          Plain Experiment         #
+#####################################
+
+#random seed
+python needles1_plain.py
+
+#specified seed
+python needles1_plain.py --seedInit 6842850
+
+#random seed
+python dart_plain.py 
+
+#specified seed
+python dart_plain.py --seedInit 3045335
+
+#####################################
+#         Signif Experiment         #
+#####################################
+
+#random seed
+python needles1.py
+
+#specified seed
+python needles1.py --seedInit 6842850
+
+#random seed
+python dart.py 
+
+#specified seed
+python dart.py --seedInit 3045335
+
+#specified seed and sample size
+python dart.py --seedInit 3045335 --samples 10
+
+#specified seed, sample size and signif
+python dart.py --seedInit 3045335 --samples 10 --digits 3

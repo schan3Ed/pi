@@ -10,7 +10,7 @@ import sys
 
 BKV = 3.1415926
 sampleID = 0
-lmt = [500, 1000, 5000, 20000, 50000, 100000, 1000000]
+lmt = [500, 1000, 5000, 20000, 50000, 100000, 500000]
 def timedFunction(f, *a, **b):
     start = time.time()
     a = f(*a, **b)
@@ -86,7 +86,7 @@ def run(sigfigs=1, probLmt=50 ** 6, tol=0.005, experimentCnt=5, seed=None, first
 def get_file_args():
   parser = argparse.ArgumentParser()
   parser.add_argument("-s", "--seedInit", type=int, default=None, help="Initial seed of experiment")
-  parser.add_argument("-d", "--digits", type=int, default=3, help="Max significant digits")
+  parser.add_argument("-d", "--digits", type=int, default=7, help="Max significant digits")
   parser.add_argument("-p", "--samples", type=int, default=100, help="Number of samples in the experiment")
 
   return parser.parse_args()
@@ -94,20 +94,22 @@ def get_file_args():
 
 if __name__ == "__main__":
     arg = get_file_args()
-    seed = np.random.randint(low=0, high=9999999)
+    seed = arg.seedInit or np.random.randint(low=0, high=9999999)
+    file = open("fg_asym_pi_signif_darts_" + str(seed) + ".txt", "w")
     print(seed, file=sys.stderr)
-    for i in range(2, 8):
-        p = run(sigfigs=i, experimentCnt=100, first=True, seed=seed)
-        
+    for i in range(2, arg.digits + 1):
+        p = run(sigfigs=i, experimentCnt=arg.samples, seed=seed)
+        print("Running signif: ", i)
         if i == 2:
-            for entry in p:
-                for key, item in entry.items():
-                    print(key, end='\t')
-                print()
+            for row in p:
+                for key, item in row.items():
+                    print(key, end='\t', file=file)
+                print(file=file) 
                 break
         for i in p:
             for key, item in i.items():
-                print(item, end='\t')
-            print()
+                print(item, end='\t', file=file)
+            print(file=file)
         seed = np.random.randint(low=0, high=9999999)
+    file.close()
   #  print("Program running")

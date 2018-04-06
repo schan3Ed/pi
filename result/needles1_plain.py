@@ -3,7 +3,7 @@ import time
 import numpy as np
 import sys
 import math
-from random import *
+import argparse
 
 BKV = 3.14159265359
 sampleID = 0
@@ -45,7 +45,6 @@ def run(probLmt=10, sigfigs=1, experimentCnt=100, seed=None, first=True):
     "main method for parallel line"
     entry = []
     global sampleID
-    seed = seed or np.random.randint(low=0, high=9999999)
     OFtol= 5.0/(10.0 ** (sigfigs + 1))
     np.random.seed(seed)
     for i in range(experimentCnt + 1):
@@ -67,23 +66,37 @@ def run(probLmt=10, sigfigs=1, experimentCnt=100, seed=None, first=True):
         np.random.seed(seed)
         yield entry[-1]
         sampleID += 1
+
     #return entry
+def get_file_args():
+  parser = argparse.ArgumentParser()
+  parser.add_argument("-s", "--seedInit", type=int, default=None, help="Initial seed of experiment")
+  parser.add_argument("-d", "--digits", type=int, default=7, help="Max significant digits")
+  parser.add_argument("-p", "--samples", type=int, default=100, help="Number of samples in the experiment")
+
+  return parser.parse_args()
 
 
 if __name__ == "__main__":
+    arg = get_file_args()
+    seed = arg.seedInit or np.random.randint(low=0, high=9999999)
+    file = open("fg_asym_pi_plain_needles_" + str(seed) + ".txt", "w")
+    
     for j in range(1, 6):
         total = 0
         lmt = 10 ** j
-        p = run(probLmt=lmt)
+        print("Running limit: ", lmt)
+        p = run(probLmt=lmt, seed = seed)
         if j == 1:
             for entry in p:
                 for key, item in entry.items():
-                    print(key, end='\t')
-                print()
+                    print(key, end='\t', file=file)
+                print(file=file)
                 break
         for i in p:
             for key, item in i.items():
-                print(item, end='\t')
-            print()
+                print(item, end='\t', file=file)
+            print(file=file)
+        seed = np.random.randint(low=0, high=9999999)
   #  print("Program running")
 

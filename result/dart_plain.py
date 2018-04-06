@@ -5,6 +5,8 @@
 import numpy as np
 import random
 import time
+import argparse
+
 BKV = 3.1415926
 sampleID = 0
 def timedFunction(f, *a, **b):
@@ -42,12 +44,10 @@ def run(probLmt=50 ** 6, experimentCnt=100, seed=None):
     "main method for parallel line"
     entry = []
     global sampleID
-    seed = seed or np.random.randint(low=0, high=9999999)
     np.random.seed(seed)
     for i in range(experimentCnt):
         isCensored = False
         t, result = timedFunction(singleExperiment, probLmt, seed)
-        
         pi, cnt, isCensored = result
         entry.append({
             "ID": sampleID,
@@ -64,19 +64,33 @@ def run(probLmt=50 ** 6, experimentCnt=100, seed=None):
         yield entry[-1]
     return entry
 
+def get_file_args():
+  parser = argparse.ArgumentParser()
+  parser.add_argument("-s", "--seedInit", type=int, default=None, help="Initial seed of experiment")
+  parser.add_argument("-d", "--digits", type=int, default=7, help="Max significant digits")
+  parser.add_argument("-p", "--samples", type=int, default=100, help="Number of samples in the experiment")
+
+  return parser.parse_args()
+
+
 if __name__ == "__main__":
-    for j in range(1, 8):
+    arg = get_file_args()
+    seed = arg.seedInit or np.random.randint(low=0, high=9999999)
+    file = open("fg_asym_pi_plain_darts_" + str(seed) + ".txt", "w")
+    
+    for j in range(1, 6):
         total = 0
         lmt = 10 ** j
-        p = run(probLmt=lmt)
+        print("Running limit: ", lmt)
+        p = run(probLmt=lmt, seed=seed)
         if j == 1:
             for entry in p:
                 for key, item in entry.items():
-                    print(key, end='\t')
-                print()
+                    print(key, end='\t', file=file)
+                print(file=file)
                 break
         for i in p:
             for key, item in i.items():
-                print(item, end='\t')
-            print()
+                print(item, end='\t', file=file)
+            print(file=file)
   #  print("Program running")

@@ -8,7 +8,8 @@ import argparse
 
 BKV = 3.14159265359
 sampleID = 0
-lmt = [400, 1000, 5000, 20000, 50000, 100000, 1000000]
+lmt = [300, 2000, 8000, 40000, 160000, 500000, 1000000]
+entry = []
 def timedFunction(f, *a, **b):
     start = time.time()
     a = f(*a, **b)
@@ -31,7 +32,7 @@ def singleDrop(d=1.0, L=1.0):
         return True
     return False
     
-def singleExperiment(pl, err, seed, sigfigs, first=True):
+def singleExperiment(pl, err, seed, sigfigs):
     "running a single experiment"
     cnt = 0
     hit = 0
@@ -45,15 +46,15 @@ def singleExperiment(pl, err, seed, sigfigs, first=True):
         if hit:
             pi = 2 * cnt / hit
         #print pi
-        if pi >= BKV_lower and pi <= BKV_upper and first:
+        if pi >= BKV_lower and pi <= BKV_upper:
             return pi, cnt, False
     return pi, cnt, True
 
 
 #@timedfunction
-def run(probLmt=50 ** 6, sigfigs=1, experimentCnt=100, seed=None, first=True):
+def run(probLmt=50 ** 6, sigfigs=1, experimentCnt=100, seed=None):
     "main method for parallel line"
-    entry = []
+    global entry
     probLmt = lmt[sigfigs - 2]
     global sampleID
 
@@ -62,7 +63,7 @@ def run(probLmt=50 ** 6, sigfigs=1, experimentCnt=100, seed=None, first=True):
     expcnt = 0
     while expcnt < experimentCnt:
         isCensored = False
-        t, result = timedFunction(singleExperiment, probLmt, OFtol, seed, sigfigs, first=first)
+        t, result = timedFunction(singleExperiment, probLmt, OFtol, seed, sigfigs)
         pi, cnt, isCensored = result
         if isCensored == False:
             expcnt += 1
@@ -84,34 +85,35 @@ def run(probLmt=50 ** 6, sigfigs=1, experimentCnt=100, seed=None, first=True):
         np.random.seed(seed)
         if isCensored == False:
             sampleID += 1
-            yield entry[-1]
-        
-    #return entry
+            yield entry[-1]    
 
 def get_file_args():
   parser = argparse.ArgumentParser()
   parser.add_argument("-s", "--seedInit", type=int, default=None, help="Initial seed of experiment")
-  parser.add_argument("-d", "--digits", type=int, default=3, help="Max significant digits")
+  parser.add_argument("-d", "--digits", type=int, default=7, help="Max significant digits")
   parser.add_argument("-p", "--samples", type=int, default=100, help="Number of samples in the experiment")
 
   return parser.parse_args()
 
 if __name__ == "__main__":
     arg = get_file_args()
-    seed = np.random.randint(low=0, high=9999999)
+    seed = arg.seedInit or np.random.randint(low=0, high=9999999)
+    file = open("fg_asym_pi_signif_needles1_" + str(seed) + ".txt", "w")
     print(seed, file=sys.stderr)
-    for i in range(2, 8):
-        p = run(sigfigs=i, experimentCnt=100, first=True, seed=seed)
+    for i in range(2, arg.digits + 1):
+        p = run(sigfigs=i, experimentCnt=arg.samples, seed=seed)
+        print("Running signif: ", i)
         if i == 2:
-            for entry in p:
-                for key, item in entry.items():
-                    print(key, end='\t')
-                print()
+            for row in p:
+                for key, item in row.items():
+                    print(key, end='\t', file=file)
+                print(file=file) 
                 break
         for i in p:
             for key, item in i.items():
-                print(item, end='\t')
-            print()
+                print(item, end='\t', file=file)
+            print(file=file)
         seed = np.random.randint(low=0, high=9999999)
+    file.close()
   #  print("Program running")
 
